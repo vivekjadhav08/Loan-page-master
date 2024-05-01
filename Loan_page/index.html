@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Form Submission</title>
+  <script type="text/javascript">
+    function submitForm() {
+      var fullName = document.getElementById("fullName").value;
+      var email = document.getElementById("email").value;
+      var loanAmount = document.getElementById("loanAmount").value;
+      var panCard = document.getElementById("panCard").value;
+      
+      // Validate inputs
+      if (fullName.trim() === "" || email.trim() === "" || loanAmount.trim() === "" || panCard.trim() === "") {
+        alert("Please fill in all the required fields.");
+        return;
+      }
+      var fullNameRegex = /^[A-Z || a-z]{4,}[" "]{0}[A-Z||a-z]{4,}$/;;
+      if (!fullNameRegex.test(fullName)) {
+    alert("Please enter a valid full name with a minimum of four characters and two words.");
+    return;
+  }
+
+      // validate email
+      var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    alert("Please enter a valid email address.");
+    return;
+  }
+  // Validate PAN Card
+  var panCardRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+      if (!panCardRegex.test(panCard)) {
+        alert("Please enter a valid PAN Card number.");
+        return;
+      }
+
+      // Store data 
+      sessionStorage.setItem("fullName", fullName);
+      sessionStorage.setItem("email", email);
+      sessionStorage.setItem("loanAmount", loanAmount);
+      sessionStorage.setItem("panCard", panCard);
+
+      // Redirect to confirmation page
+      window.location.href = "confirm.html";
+    }
+    //convert into words
+    function convertToWords(number) {
+      var words = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
+      var tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+      var amountInWords = "";
+
+      if (number === 0)
+        return "";
+      else if (number < 20)
+        return words[number];
+      else if (number < 100)
+        return tens[Math.floor(number / 10)] + " " + convertToWords(number % 10);
+      else if (number < 1000)
+        return words[Math.floor(number / 100)] + " Hundred " + convertToWords(number % 100);
+      else if (number < 100000)
+        return convertToWords(Math.floor(number / 1000)) + " Thousand " + convertToWords(number % 1000);
+      else if (number < 10000000)
+        return convertToWords(Math.floor(number / 100000)) + " Lakh " + convertToWords(number % 100000);
+      else
+        return convertToWords(Math.floor(number / 10000000)) + " Crore " + convertToWords(number % 10000000);
+    }
+
+    function updateLoanAmountInWords() {
+  var loanAmount = document.getElementById("loanAmount").value;
+  var loanAmountDigits = loanAmount.length;
+      //check the digit
+  if (loanAmountDigits > 9) {
+    alert("Loan amount must be 9 digits or less.");
+    return;
+  }
+
+  var amountInWords = convertToWords(parseInt(loanAmount));
+  document.getElementById("loanAmountInWords").textContent = amountInWords + " Rs";
+}
+ 
+  </script>
+</head>
+<body>
+    <center>
+        <h2> Loan Form </h2>
+    
+  <form>
+    <table>
+        <tr>
+    <td align="right"><label for="fullName" >Full Name:</label>
+    <input type="text" id="fullName" required></td>
+       </tr>
+    
+    
+
+     <tr>
+    <td align="right"><label for="email" >Email:</label>
+    <input type="email" id="email" required> </td>
+    </tr>
+
+
+
+    <tr>
+        <td align="right"><label for="panCard" >PAN Card:</label>
+        <input type="text" id="panCard" required pattern="[A-Za-z]{5}\d{4}[A-Za-z]{1}" title="Please enter PAN number in the format ABCDE1234F."></td>
+        </tr>
+
+    <tr>
+        <td align="right"><label for="loanAmount">Loan Amount:</label>
+    <input type="number" id="loanAmount" required oninput="updateLoanAmountInWords()">
+    <div id="loanAmountInWords"></div> </td>
+    </tr>
+
+          <tr>
+           <td colspan="2" align="center"><input type="button" value="Submit" onclick="submitForm()"></td>
+           </tr>
+
+    </table>
+  </form>
+  
+</center>
+
+  <script type="text/javascript">
+    // On page load
+    updateLoanAmountInWords();
+  </script>
+</body>
+</html>
